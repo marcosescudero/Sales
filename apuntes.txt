@@ -1,0 +1,18 @@
+Server: prometeo.database.windows.net
+DB: anubis
+user:Zulu
+Pass: NoMeLaSe2018*
+
+<connectionStrings>
+  <add name="DefaultConnection"
+       connectionString="Data Source=prometeo.database.windows.net;Initial Catalog=anubis;Persist Security Info=True;User=Zulu;Password=NoMeLaSe2018*"
+       providerName="System.Data.SqlClient" />
+</connectionStrings>
+
+---------------------------------------------------------
+
+<connectionStrings>
+  <add name="DefaultConnection"
+       connectionString="Data Source=200.55.241.235;Initial Catalog=afrodita;Persist Security Info=True;User=sa;Password=Justo1150"
+       providerName="System.Data.SqlClient" />
+</connectionStrings>
