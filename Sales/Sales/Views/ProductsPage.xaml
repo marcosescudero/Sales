@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Sales.Views.ProductsPage"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}">
+    <ContentPage.Content>
+        <StackLayout
+            
+            BindingContext="{Binding Products}">
+            <!-- El binding anterior: se binda a Products que es un atributo de Main y que instancia a ProductViewModel -->
+            <ListView
+                ItemsSource="{Binding Products}">
+                <!-- El binding anterior: se binda a un atributo dentro de Products que me va a servir para pintar la lista de objetos -->
+
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
