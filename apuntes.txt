@@ -1,11 +1,11 @@
-Server: prometeo.database.windows.net
-DB: anubis
-user:Zulu
-Pass: NoMeLaSe2018*
+Server: zuluserver.database.windows.net
+DB: sales
+user:mirringo
+Pass: NoMeLoSe8712!
 
 <connectionStrings>
   <add name="DefaultConnection"
-       connectionString="Data Source=prometeo.database.windows.net;Initial Catalog=anubis;Persist Security Info=True;User=Zulu;Password=NoMeLaSe2018*"
+       connectionString="Data Source=zuluserver.database.windows.net;Initial Catalog=sales;Persist Security Info=True;User=mirringo;Password=NoMeLoSe8712!"
        providerName="System.Data.SqlClient" />
 </connectionStrings>
 
