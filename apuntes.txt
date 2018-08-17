@@ -13,6 +13,24 @@ Pass: NoMeLoSe8712!
 
 <connectionStrings>
   <add name="DefaultConnection"
-       connectionString="Data Source=200.55.241.235;Initial Catalog=afrodita;Persist Security Info=True;User=sa;Password=Justo1150"
+       connectionString="Data Source=200.55.241.235;Initial Catalog=sales;Persist Security Info=True;User=sa;Password=Justo1150"
        providerName="System.Data.SqlClient" />
 </connectionStrings>
+
+--------------------------------------------------------
+
+TRADUCCION A VARIOS LENGUAJES
+-----------------------------
+
+Descargar el Rex Manager desde el Rex Manager Visual Studio Marketplace
+Esto nos ayudará con los recursos del multilenguaje
+
+Se descarga un archivo Vsix, que es una extensión del visual Studio
+Cerrar el Visual Studio por precausión.
+Darle doble click al ReXmanager.VSIX.vsix y se instalará.
+Luego abrir el Visual studio y dentro de TOOLS, figura el Rex Manager
+
+Esto nos permite cargar y traducir en varios lenguajes. 
+
+IMPORTANTE:
+Al archivo de recursos principal (Resource.resx) hay que cambiarle el modificador "Internal" por "Public"

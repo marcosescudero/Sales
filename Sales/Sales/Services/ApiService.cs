@@ -7,13 +7,43 @@ namespace Sales.Services
     using System.Net.Http;
     using System.Threading.Tasks;
     using Common.Models;
+    using Helpers;
     using Newtonsoft.Json;
+    using Plugin.Connectivity;
 
     // haremos un método genérico que nos sirve para consumir de cualquier servicio API, y nos va a servir para consumir de cualquier lista.
     public class ApiService
     {
+
+        public async Task<Response> CheckConnection()
+        {
+            if (!CrossConnectivity.Current.IsConnected)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = Languages.TurnOnInternet,
+                };
+            }
+
+            var isReachable = await CrossConnectivity.Current.IsRemoteReachable("google.com");
+            if (!isReachable)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = Languages.NoInternet,
+                };
+            }
+
+            return new Response
+            {
+                IsSuccess = true,
+            };
+        }
+
         // La clase Response, como es una clase que usaremos transversalmente, no la crearemos aquí, sino que la crearemos en Sales.Common.Models
-        public async Task<Response> GetList <T> (string urlBase, string prefix, string controller)
+        public async Task<Response> GetList<T> (string urlBase, string prefix, string controller)
         {
             try
             {
@@ -36,7 +66,6 @@ namespace Sales.Services
                 return new Response
                 {
                     IsSuccess = true,
-                    Message = "",
                     Result = list,
                 };
             }
