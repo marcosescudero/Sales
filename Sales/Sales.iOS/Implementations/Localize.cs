@@ -85,3 +85,4 @@ namespace Sales.iOS.Implementations
             return netLanguage;
         }
     }
+}

@@ -4,10 +4,10 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Products</h2>
+<h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
     <tr>
@@ -53,9 +53,9 @@
             @Html.DisplayFor(modelItem => item.PublishOn)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }, new { @class = "btn btn-warning" }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ProductId }, new { @class = "btn btn-info" }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId }, new { @class = "btn btn-danger" })
+            @Html.ActionLink("Edit", "Edit", new { id=item.ProductId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ProductId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ProductId })
         </td>
     </tr>
 }
