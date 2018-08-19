@@ -28,6 +28,18 @@ namespace Sales.Common.Models
         [DataType(DataType.Date)]
         public DateTime PublishOn { get; set; }
 
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.ImagePath))
+                {
+                    return null;
+                }
+                return $"http://200.55.241.235/SalesBackend{this.ImagePath.Substring(1)}"; // el substring paraes para quitarle el ñuflo
+            }
+        }
+
         public override string ToString()
         {
             return this.Description;
