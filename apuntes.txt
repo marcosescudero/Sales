@@ -54,9 +54,11 @@ Hay que habilitar un procesos que se llama "habilitar las migraciones automática
 Está explicado en el documento MVC
 
 --------------------
-TRUCO: 
-En C# tenemos muchas palabras reservadas por ejemplo IF, ELSE
-Si queremos colocarle IF a una variable, entonces hay que anteponerle el @
-por ejemplo @IF, @ELSE, de esta forma es posible utilirlas como variables.
+TRUCOS: 
+1) En C# tenemos muchas palabras reservadas por ejemplo IF, ELSE
+   Si queremos colocarle IF a una variable, entonces hay que anteponerle el @
+   por ejemplo @IF, @ELSE, de esta forma es posible utilirlas como variables.
 
+2) El signo ? en C# se utiliza para indicar que el valor puede ser nulo. por ejemplo int?
+   Se utiliza "var" cuando quiero definir una variable sin Tipar (el tipo de datos se asume en forma dinamica)
 ------------------
