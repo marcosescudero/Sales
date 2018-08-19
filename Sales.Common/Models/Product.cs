@@ -34,7 +34,7 @@ namespace Sales.Common.Models
             {
                 if (string.IsNullOrEmpty(this.ImagePath))
                 {
-                    return null;
+                    return "noproduct";
                 }
                 return $"http://200.55.241.235/SalesBackend{this.ImagePath.Substring(1)}"; // el substring paraes para quitarle el ñuflo
             }
