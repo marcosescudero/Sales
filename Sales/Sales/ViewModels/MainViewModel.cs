@@ -10,10 +10,12 @@ namespace Sales.ViewModels
     public class MainViewModel
     {
         public ProductsViewModel Products { get; set; }
+        public AddProductViewModel AddProduct { get; set; }
 
         public MainViewModel()
         {
             this.Products = new ProductsViewModel();
+            
         }
 
         public ICommand AddProductCommand
@@ -26,6 +28,7 @@ namespace Sales.ViewModels
 
         private async void GoToAddProduct()
         {
+            this.AddProduct = new AddProductViewModel();
             await Application.Current.MainPage.Navigation.PushAsync(new AddProductPage());
         }
     }
