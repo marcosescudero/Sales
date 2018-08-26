@@ -13,10 +13,12 @@ namespace Sales.ViewModels
 
     public class ProductsViewModel : BaseViewModel
     {
+        #region Attributes
         private ApiService apiService;
-
         private bool isRefreshing;
+        #endregion
 
+        #region Properties
         private ObservableCollection<Product> products;
         public ObservableCollection<Product> Products
         {
@@ -29,13 +31,31 @@ namespace Sales.ViewModels
             get { return this.isRefreshing; }
             set { SetValue(ref this.isRefreshing, value); }
         }
+        #endregion
 
+        #region Constructors
         public ProductsViewModel()
         {
+            instance = this;
             this.apiService = new ApiService();
             this.LoadProducts();
         }
+        #endregion
 
+        #region Singleton
+        private static ProductsViewModel instance; // Atributo
+        public static ProductsViewModel GetInstance()
+        {
+            if (instance == null)
+            {
+                instance = new ProductsViewModel(); 
+            }
+            
+            return instance;
+        }
+        #endregion
+
+        #region Methods
         private async void LoadProducts()
         {
             this.IsRefreshing = true;
@@ -47,7 +67,6 @@ namespace Sales.ViewModels
                 await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
                 return;
             }
-
 
             //var response = await this.apiService.GetList<Product>("http://200.55.241.235", "/SalesAPI/api", "/Products");
             var url = Application.Current.Resources["UrlAPI"].ToString(); // Obtengo la url del diccionario de recursos.
@@ -67,13 +86,16 @@ namespace Sales.ViewModels
             this.Products = new ObservableCollection<Product>(list);
             this.IsRefreshing = false;
         }
+        #endregion
 
+        #region Commands
         public ICommand RefreshCommand
         {
             get
             {
                 return new RelayCommand(LoadProducts);
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -1,16 +1,21 @@
-﻿using GalaSoft.MvvmLight.Command;
-using Sales.Helpers;
-using System;
-using System.Windows.Input;
-using Xamarin.Forms;
+﻿
 
 namespace Sales.ViewModels
 {
+    using System.Linq;
+    using System.Windows.Input;
+    using Common.Models;
+    using GalaSoft.MvvmLight.Command;
+    using Helpers;
+    using Services;   
+    using Xamarin.Forms;
+
     public class AddProductViewModel:BaseViewModel // IMPORTANTE: las ViewModel deben heredar de la BaseViewmodel
     {
         #region Attributes
-        public bool isRunning;
-        public bool isEnabled;
+        private ApiService apiService;
+        private bool isRunning;
+        private bool isEnabled;
         #endregion
 
         #region Properties
@@ -37,6 +42,7 @@ namespace Sales.ViewModels
         public AddProductViewModel()
         {
             this.isEnabled = true;
+            this.apiService = new ApiService();
         }
         #endregion
 
@@ -77,9 +83,60 @@ namespace Sales.ViewModels
                     Languages.Accept);
                 return;
             }
+
+            this.IsRunning = true; // Esto muestra el activity indicator
+            this.IsEnabled = false; // Desabilito el botón de SAVE para que el usuario no le pegue varias veces.
+
+            var product = new Product
+            {
+                Description = this.Description,
+                Price = price,
+                Remarks = this.Remarks,
+            };
+
+            var connection = await this.apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                return;
+            }
+
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+            var prefix = Application.Current.Resources["UrlPrefix"].ToString();
+            var controller = Application.Current.Resources["UrlProductsController"].ToString();
+            var response = await this.apiService.Post(url, prefix, controller, product);
+
+            if (!response.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
+                return;
+            }
+
+            /*
+             *   Agregamos el producto en la ListView. 
+             *   NOTA: El producto que enviamos no tiene fecha, ni IsAvailable, 
+             *   ni el Id del producto, en cambio, cuando va a la api y vuelve, ya trae todos esos datos.
+             */
+
+            var newProduct = (Product) response.Result;
+            var viewModel = ProductsViewModel.GetInstance();
+            viewModel.Products.Add(newProduct); // Le agrego el nuevo producto 
+
+            this.IsRunning = false;
+            this.IsEnabled = true;
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
-        #endregion
+
 
 
     }
+
+
+
+        #endregion
+    
 }
