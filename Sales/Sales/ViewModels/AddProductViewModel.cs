@@ -2,12 +2,11 @@
 
 namespace Sales.ViewModels
 {
-    using System.Linq;
     using System.Windows.Input;
     using Common.Models;
     using GalaSoft.MvvmLight.Command;
     using Helpers;
-    using Services;   
+    using Services;
     using Xamarin.Forms;
 
     public class AddProductViewModel:BaseViewModel // IMPORTANTE: las ViewModel deben heredar de la BaseViewmodel
@@ -87,21 +86,25 @@ namespace Sales.ViewModels
             this.IsRunning = true; // Esto muestra el activity indicator
             this.IsEnabled = false; // Desabilito el botón de SAVE para que el usuario no le pegue varias veces.
 
-            var product = new Product
-            {
-                Description = this.Description,
-                Price = price,
-                Remarks = this.Remarks,
-            };
 
             var connection = await this.apiService.CheckConnection();
             if (!connection.IsSuccess)
             {
                 this.IsRunning = false;
                 this.IsEnabled = true;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error, 
+                    connection.Message, 
+                    Languages.Accept);
                 return;
             }
+
+            var product = new Product
+            {
+                Description = this.Description,
+                Price = price,
+                Remarks = this.Remarks,
+            };
 
             var url = Application.Current.Resources["UrlAPI"].ToString();
             var prefix = Application.Current.Resources["UrlPrefix"].ToString();
@@ -112,7 +115,10 @@ namespace Sales.ViewModels
             {
                 this.IsRunning = false;
                 this.IsEnabled = true;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error, 
+                    response.Message, 
+                    Languages.Accept);
                 return;
             }
 
