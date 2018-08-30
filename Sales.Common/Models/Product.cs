@@ -3,6 +3,7 @@ namespace Sales.Common.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Product
     {
@@ -28,6 +29,9 @@ namespace Sales.Common.Models
         [DataType(DataType.Date)]
         public DateTime PublishOn { get; set; }
 
+        [NotMapped] // Cuando tengo atributos que forman parte del modelo, PERO que no formen parte de la base de datos, se coloca [NotMapped]
+        public byte[] ImageArray { get; set; }
+
         public string ImageFullPath
         {
             get
@@ -36,7 +40,8 @@ namespace Sales.Common.Models
                 {
                     return "noproduct";
                 }
-                return $"http://200.55.241.235/SalesBackend{this.ImagePath.Substring(1)}"; // el substring paraes para quitarle el ñuflo
+                //return $"http://200.55.241.235/SalesBackend{this.ImagePath.Substring(1)}"; // el substring es para quitarle el ñuflo
+                return $"http://200.55.241.235/SalesAPI{this.ImagePath.Substring(1)}"; // el substring es para quitarle el ñuflo
             }
         }
 
