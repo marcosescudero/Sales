@@ -61,4 +61,9 @@ TRUCOS:
 
 2) El signo ? en C# se utiliza para indicar que el valor puede ser nulo. por ejemplo int?
    Se utiliza "var" cuando quiero definir una variable sin Tipar (el tipo de datos se asume en forma dinamica)
-------------------
+----------------------
+
+
+un pagina muy buena:  
+https://help.syncfusion.com/xamarin/utility
+https://blog.xamarin.com/barcode-scanning-made-easy-with-zxing-net-for-xamarin-forms/
