@@ -44,7 +44,7 @@ namespace Sales.Services
         }
 
         // La clase Response, como es una clase que usaremos transversalmente, no la crearemos aquí, sino que la crearemos en Sales.Common.Models
-        public async Task<Response> GetList<T> (string urlBase, string prefix, string controller)
+        public async Task<Response> GetList<T>(string urlBase, string prefix, string controller)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Sales.Services
                 var url = $"{prefix}{controller}"; // Esto concatena. Es equivalente al String.format
                 var response = await cliente.GetAsync(url);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
-                if (!response.IsSuccessStatusCode) 
+                if (!response.IsSuccessStatusCode)
                 {
                     return new Response
                     {
@@ -116,6 +116,40 @@ namespace Sales.Services
                 };
             }
         }
+
+        public async Task<Response> Delete(string urlBase, string prefix, string controller, int id)
+        {
+            try
+            {
+                var cliente = new HttpClient();
+                cliente.BaseAddress = new Uri(urlBase);
+                var url = $"{prefix}{controller}/{id}"; // Esto concatena. Es equivalente al String.format
+                var response = await cliente.DeleteAsync(url);
+                var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer, // Que muestre lo que leyó en la variable answer
+                    };
+                }
+
+                return new Response
+                {
+                    IsSuccess = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+
 
     }
 }
