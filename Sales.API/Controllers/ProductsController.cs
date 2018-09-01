@@ -84,7 +84,7 @@ namespace Sales.API.Controllers
                 }
             }
 
-            return Ok(product);
+            return Ok(product); // Devuelve el producto tal cual quedó en la Base de datos.!!
         }
 
         // POST: api/Products
@@ -133,7 +133,7 @@ namespace Sales.API.Controllers
             db.Products.Remove(product);
             await db.SaveChangesAsync();
 
-            return Ok(product);
+            return Ok(product); // Devuelve el producto tal cual quedó en la Base de datos.!!
         }
 
         protected override void Dispose(bool disposing)

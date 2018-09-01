@@ -25,7 +25,7 @@ namespace Sales.ViewModels
         #endregion
 
         #region Commands
-        public ICommand EditProductCommnad
+        public ICommand EditProductCommand
         {
             get
             {
@@ -80,11 +80,12 @@ namespace Sales.ViewModels
             }
 
             var productsViewModel = ProductsViewModel.GetInstance();
-            var deletedProduct = productsViewModel.Products.Where(p => p.ProductId == this.ProductId).FirstOrDefault(); // LinQ
+            var deletedProduct = productsViewModel.MyProducts.Where(p => p.ProductId == this.ProductId).FirstOrDefault(); // LinQ
             if (deletedProduct != null)
             {
-                productsViewModel.Products.Remove(deletedProduct); // con esto me lo debe refrescar automaticamente en la lista
+                productsViewModel.MyProducts.Remove(deletedProduct); // con esto me lo debe refrescar automaticamente en la lista
             }
+            productsViewModel.RefreshList();
         }
         #endregion
     }

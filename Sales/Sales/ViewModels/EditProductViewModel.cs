@@ -8,6 +8,7 @@ namespace Sales.ViewModels
     using Plugin.Media.Abstractions;
     using Sales.Helpers;
     using Services;
+    using System;
     using System.Linq;
     using System.Windows.Input;
     using Xamarin.Forms;
@@ -59,6 +60,65 @@ namespace Sales.ViewModels
         #endregion    
 
         #region Commands
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return new RelayCommand(Delete);
+            }
+        }
+
+        private async void Delete()
+        {
+            var answer = await Application.Current.MainPage.DisplayAlert(
+                Languages.Confirm,
+                Languages.DeleteConfirmation,
+                Languages.Yes,
+                Languages.No);
+
+            if (!answer)
+            {
+                return;
+            }
+
+            this.IsRunning = true;
+            this.isEnabled = false;
+
+            var connection = await this.apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.isEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                return;
+            }
+
+            var url = Application.Current.Resources["UrlAPI"].ToString(); // Obtengo la url del diccionario de recursos.
+            var prefix = Application.Current.Resources["UrlPrefix"].ToString(); // Obtengo el prefijo del diccionario de recursos.
+            var controller = Application.Current.Resources["UrlProductsController"].ToString(); // Obtengo el controlador del diccionario de recursos.
+
+            var response = await this.apiService.Delete(url, prefix, controller, this.Product.ProductId);
+
+            if (!response.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.isEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
+                return;
+            }
+
+            var productsViewModel = ProductsViewModel.GetInstance();
+            var deletedProduct = productsViewModel.MyProducts.Where(p => p.ProductId == this.Product.ProductId).FirstOrDefault(); // LinQ
+            if (deletedProduct != null)
+            {
+                productsViewModel.MyProducts.Remove(deletedProduct); // con esto me lo debe refrescar automaticamente en la lista
+            }
+            productsViewModel.RefreshList();
+            this.IsRunning = false;
+            this.isEnabled = true;
+            await Application.Current.MainPage.Navigation.PopAsync();
+        }
+
         public ICommand ChangeImageCommand
         {
             get
@@ -110,7 +170,6 @@ namespace Sales.ViewModels
             }
         }
 
-
         public ICommand SaveCommand
         {
             get
@@ -159,6 +218,7 @@ namespace Sales.ViewModels
             if (this.file != null)
             {
                 imageArray = FilesHelper.ReadFully(this.file.GetStream());
+                this.product.ImageArray = imageArray;
             }
 
 
