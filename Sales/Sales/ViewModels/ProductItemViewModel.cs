@@ -1,6 +1,7 @@
 ﻿
 namespace Sales.ViewModels
 {
+    using System;
     using System.Linq;
     using System.Windows.Input;
     using Common.Models;
@@ -8,6 +9,7 @@ namespace Sales.ViewModels
     using Helpers;
     using Services;
     using Xamarin.Forms;
+    using Views;
 
     public class ProductItemViewModel : Product
     {
@@ -22,9 +24,21 @@ namespace Sales.ViewModels
         }
         #endregion
 
-
-
         #region Commands
+        public ICommand EditProductCommnad
+        {
+            get
+            {
+                return new RelayCommand(EditProduct);
+            }
+        }
+
+        private async void EditProduct()
+        {
+            MainViewModel.GetInstance().EditProduct = new EditProductViewModel(this);
+            await Application.Current.MainPage.Navigation.PushAsync(new EditProductPage());
+        }
+
         public ICommand DeleteProductCommand
         {
             get

@@ -1,6 +1,7 @@
 ﻿
 namespace Sales.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -21,6 +22,7 @@ namespace Sales.ViewModels
         #endregion
 
         #region Properties
+        public List<Product> MyProducts { get; set; }
 
         public ObservableCollection<ProductItemViewModel> Products
         {
@@ -84,8 +86,13 @@ namespace Sales.ViewModels
                 return;
             }
 
-            var list = (List<Product>)response.Result; // hay que castearlo
+            this.MyProducts = (List<Product>)response.Result; // hay que castearlo
+            this.RefreshList();
+            this.IsRefreshing = false;
+        }
 
+        public void RefreshList()
+        {
             // Expresion válida pero de BAJA PERFORMANCE.!!!
             //var myList = new List<ProductItemViewModel>();
             //foreach (var item in list)
@@ -96,7 +103,7 @@ namespace Sales.ViewModels
             //}
 
             // Expresion Lamda (ALTA PERFORMANCE)
-            var myList = list.Select(p => new ProductItemViewModel
+            var myListProductItemViewModel = this.MyProducts.Select(p => new ProductItemViewModel
             {
                 Description = p.Description,
                 ImageArray = p.ImageArray,
@@ -109,8 +116,8 @@ namespace Sales.ViewModels
             });
 
 
-            this.Products = new ObservableCollection<ProductItemViewModel>(myList);
-            this.IsRefreshing = false;
+            this.Products = new ObservableCollection<ProductItemViewModel>(
+                myListProductItemViewModel.OrderBy(p => p.Description));
         }
         #endregion
 
