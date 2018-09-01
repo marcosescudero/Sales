@@ -58,7 +58,6 @@ namespace Sales.ViewModels
         #endregion
 
         #region Commands
-
         public ICommand ChangeImageCommand
         {
             get
@@ -211,13 +210,6 @@ namespace Sales.ViewModels
             this.IsEnabled = true;
             await Application.Current.MainPage.Navigation.PopAsync();
         }
-
-
-
-    }
-
-
-
         #endregion
-    
+    }
 }

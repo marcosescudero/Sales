@@ -3,17 +3,203 @@
 namespace Sales.ViewModels
 {
     using Common.Models;
-    public class EditProductViewModel
+    using GalaSoft.MvvmLight.Command;
+    using Plugin.Media;
+    using Plugin.Media.Abstractions;
+    using Sales.Helpers;
+    using Services;
+    using System.Linq;
+    using System.Windows.Input;
+    using Xamarin.Forms;
+
+    public class EditProductViewModel : BaseViewModel
     {
         #region Attributes
         private Product product;
+        private MediaFile file;
+        private ImageSource imageSource;
+        private ApiService apiService;
+        private bool isRunning;
+        private bool isEnabled;
+        #endregion
+
+        #region Properties
+        public Product Product
+        { 
+            get { return this.product; }
+            set { SetValue(ref this.product, value); }
+        }
+        public bool IsRunning
+        {
+            get { return this.isRunning; }
+            set { SetValue(ref this.isRunning, value); }
+        }
+
+        public ImageSource ImageSource
+        {
+            get { return this.imageSource; }
+            set { SetValue(ref this.imageSource, value); }
+        }
+
+        public bool IsEnabled
+        {
+            get { return this.isEnabled; }
+            set { SetValue(ref this.isEnabled, value); }
+        }
         #endregion
 
         #region Constructors
         public EditProductViewModel(Product product)
         {
             this.product = product;
+            this.isEnabled = true;
+            this.apiService = new ApiService();
+            this.ImageSource = product.ImageFullPath;
         }
         #endregion    
+
+        #region Commands
+        public ICommand ChangeImageCommand
+        {
+            get
+            {
+                return new RelayCommand(ChangeImage);
+            }
+        }
+
+        private async void ChangeImage()
+        {
+            await CrossMedia.Current.Initialize();
+
+            var source = await Application.Current.MainPage.DisplayActionSheet(
+                Languages.ImageSource,
+                Languages.Cancel,
+                null,
+                Languages.FromGallery,
+                Languages.NewPicture);
+
+            if (source == Languages.Cancel)
+            {
+                this.file = null;
+                return;
+            }
+
+            if (source == Languages.NewPicture)
+            {
+                this.file = await CrossMedia.Current.TakePhotoAsync(
+                    new StoreCameraMediaOptions
+                    {
+                        Directory = "Sample",
+                        Name = "test.jpg",
+                        PhotoSize = PhotoSize.Small,
+                    }
+                );
+            }
+            else
+            {
+                this.file = await CrossMedia.Current.PickPhotoAsync();
+            }
+
+            if (this.file != null)
+            {
+                this.ImageSource = ImageSource.FromStream(() =>
+                {
+                    var stream = this.file.GetStream();
+                    return stream;
+                });
+            }
+        }
+
+
+        public ICommand SaveCommand
+        {
+            get
+            {
+                return new RelayCommand(Save);
+            }
+        }
+
+        private async void Save()
+        {
+            if (string.IsNullOrEmpty(this.Product.Description))
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    Languages.DescriptionError,
+                    Languages.Accept);
+                return;
+            }
+
+            if (this.Product.Price < 0)
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    Languages.PriceError,
+                    Languages.Accept);
+                return;
+            }
+
+            this.IsRunning = true; // Esto muestra el activity indicator
+            this.IsEnabled = false; // Desabilito el botón de SAVE para que el usuario no le pegue varias veces.
+
+
+            var connection = await this.apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    connection.Message,
+                    Languages.Accept);
+                return;
+            }
+
+            byte[] imageArray = null;
+            if (this.file != null)
+            {
+                imageArray = FilesHelper.ReadFully(this.file.GetStream());
+            }
+
+
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+            var prefix = Application.Current.Resources["UrlPrefix"].ToString();
+            var controller = Application.Current.Resources["UrlProductsController"].ToString();
+            var response = await this.apiService.Put(url, prefix, controller, this.product,this.Product.ProductId);
+
+            if (!response.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    response.Message,
+                    Languages.Accept);
+                return;
+            }
+
+            /*
+             *   Refrescamos la ListView eliminado y agregando el producto. 
+             *   (Es la unica manera en que refresca. Bug de xamarin)
+             */
+
+            var newProduct = (Product)response.Result;
+            var productsViewModel = ProductsViewModel.GetInstance();
+            var oldProduct = productsViewModel.MyProducts.Where(p => p.ProductId == this.Product.ProductId).FirstOrDefault();
+            if (oldProduct != null)
+            {
+                productsViewModel.MyProducts.Remove(oldProduct);
+            }
+
+            productsViewModel.MyProducts.Add(newProduct);
+            productsViewModel.RefreshList();
+
+
+            this.IsRunning = false;
+            this.IsEnabled = true;
+            await Application.Current.MainPage.Navigation.PopAsync();
+        }
+        #endregion
+
     }
 }
