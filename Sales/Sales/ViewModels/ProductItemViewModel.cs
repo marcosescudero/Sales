@@ -1,15 +1,14 @@
 ﻿
 namespace Sales.ViewModels
 {
-    using System;
     using System.Linq;
     using System.Windows.Input;
     using Common.Models;
     using GalaSoft.MvvmLight.Command;
     using Helpers;
     using Services;
-    using Xamarin.Forms;
     using Views;
+    using Xamarin.Forms;
 
     public class ProductItemViewModel : Product
     {
