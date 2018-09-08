@@ -1,0 +1,9 @@
+Lo que sigue
+
+  1.Search Bar
+  2.Pantalla de login
+  3.Obtener token
+  4.Guardar datos en persistencia
+  5.Crear una Master Detail
+  6.consumir servicios de forma segura
+  7.Base de datos SQLite
