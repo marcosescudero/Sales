@@ -1,22 +1,23 @@
 ﻿
-using GalaSoft.MvvmLight.Command;
-using Sales.Helpers;
-using System;
-using System.Windows.Input;
-using Xamarin.Forms;
-
 namespace Sales.ViewModels
 {
+    using System.Windows.Input;
+    using GalaSoft.MvvmLight.Command;
+    using Helpers;
+    using Services;
+    using Xamarin.Forms;
+
     public class LoginViewModel:BaseViewModel
     {
         #region Attributes
+        private ApiService apiService;
         private bool isRunning;
         private bool isEnabled;
 
         #endregion
 
         #region Properties
-        public string EMail { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
         public bool IsRemembered { get; set; }
         public bool IsRunning
@@ -35,6 +36,7 @@ namespace Sales.ViewModels
         #region Constructors
         public LoginViewModel()
         {
+            this.apiService = new ApiService();
             this.IsEnabled = true;
             this.IsRemembered = true;
         }
@@ -52,7 +54,7 @@ namespace Sales.ViewModels
 
         private async void Login()
         {
-            if (string.IsNullOrEmpty(this.EMail))
+            if (string.IsNullOrEmpty(this.Email))
             {
                 await Application.Current.MainPage.DisplayAlert(
                     Languages.Error,
@@ -70,6 +72,33 @@ namespace Sales.ViewModels
                     );
                 return;
             }
+
+            this.IsRunning = true; 
+            this.IsEnabled = false; // Desabilita botones
+            var connection = await apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                return;
+            }
+
+            var url = Application.Current.Resources["UrlAPI"].ToString(); // Obtengo la url del diccionario de recursos.
+            var token = await this.apiService.GetToken(url, this.Email, this.Password);
+
+            if (token == null || string.IsNullOrEmpty(token.AccessToken))
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, Languages.SomethingWrong, Languages.Accept);
+                return;
+            }
+
+            this.IsRunning = false;
+            this.IsEnabled = true;
+            await Application.Current.MainPage.DisplayAlert("ok", "Yeah...!!",Languages.Accept);
+
         }
         #endregion
 

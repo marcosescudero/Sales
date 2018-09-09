@@ -1,12 +1,10 @@
 ﻿
 namespace Sales.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Input;
-
     using Common.Models;
     using GalaSoft.MvvmLight.Command;
     using Helpers;

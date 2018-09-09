@@ -67,3 +67,25 @@ TRUCOS:
 un pagina muy buena:  
 https://help.syncfusion.com/xamarin/utility
 https://blog.xamarin.com/barcode-scanning-made-easy-with-zxing-net-for-xamarin-forms/
+
+------------------------------------------------
+MVC - Etiqueta [Authorize]
+
+En el ProductsController :
+- Si yo quiero que para Crear, Modificar, Eliminar y Borrar sean usuarios registrados, 
+  solamente se debe colocar la etiqueta [Authorize].
+- Colocando [Authorize] estoy protegiendo todos los métodos del controlador.
+- La etiqueta [Authorize] puede ir a nivel de 'controlador' o a nivel de 'método'.
+  Por ejemplo si coloco la etiqueta [Authorize] al método "Create" va a permitir crear nuevos usuarios solamente a usuarios que ya estén registrados.
+  Pero si le colocamos la etiqueta [Authorize] a todo el controlador, significa que todo el controlador queda protegido.
+
+
+
+
+
+
+
+
+
+
+
