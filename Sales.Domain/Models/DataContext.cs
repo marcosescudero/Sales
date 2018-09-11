@@ -4,10 +4,11 @@
     using Common.Models;
     public class DataContext : DbContext
     {
-        public DataContext() :base("DefaultConnection")
+        #region Constructors
+        public DataContext() : base("DefaultConnection")
         {
-
-        }
+        } 
+        #endregion
 
         public DbSet<Product> Products { get; set; }
     }

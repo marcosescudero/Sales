@@ -16,6 +16,12 @@ namespace Sales.Services
     public class ApiService
     {
 
+        /*
+         * NOTA: 
+         * La clase Task es la encargada de ejecutar una o varias tareas fuera del hilo que 
+         * la ejecuta creando ésta un Thread propio para evitar congelar la interfaz del usuario.
+         */
+
         public async Task<TokenResponse> GetToken(string urlBase, string username, string password)
         {
             try

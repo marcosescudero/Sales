@@ -73,14 +73,18 @@ namespace Sales.ViewModels
                 return;
             }
 
-            this.IsRunning = true; 
+            this.IsRunning = true;  // Muestra el Activity indicator
             this.IsEnabled = false; // Desabilita botones
             var connection = await apiService.CheckConnection();
             if (!connection.IsSuccess)
             {
                 this.IsRunning = false;
                 this.IsEnabled = true;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error, 
+                    connection.Message, 
+                    Languages.Accept
+                    );
                 return;
             }
 
@@ -91,7 +95,11 @@ namespace Sales.ViewModels
             {
                 this.IsRunning = false;
                 this.IsEnabled = true;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, Languages.SomethingWrong, Languages.Accept);
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error, 
+                    Languages.SomethingWrong, 
+                    Languages.Accept
+                    );
                 return;
             }
 
