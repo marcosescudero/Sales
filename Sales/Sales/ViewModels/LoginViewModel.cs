@@ -104,8 +104,15 @@ namespace Sales.ViewModels
                 return;
             }
 
+
+            Settings.TokenType = token.TokenType;
+            Settings.AccessToken = token.AccessToken;
+            Settings.IsRemembered = this.IsRemembered;
+
+
             MainViewModel.GetInstance().Products = new ProductsViewModel();
             Application.Current.MainPage = new ProductsPage();
+
             this.IsRunning = false;
             this.IsEnabled = true;
 

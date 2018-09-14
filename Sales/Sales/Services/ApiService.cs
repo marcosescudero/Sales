@@ -5,6 +5,7 @@ namespace Sales.Services
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
     using Common.Models;
@@ -76,13 +77,11 @@ namespace Sales.Services
         {
             try
             {
-                var cliente = new HttpClient();
-                //cliente.BaseAddress = new Uri(urlBase);
-                
+                var client = new HttpClient();
+                //client.BaseAddress = new Uri(urlBase);
                 var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
-
                 var url = $"{prefix}{controller}"; // Esto concatena. Es equivalente al String.format
-                var response = await cliente.GetAsync(url2);
+                var response = await client.GetAsync(url2);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
                 if (!response.IsSuccessStatusCode)
                 {
@@ -109,7 +108,43 @@ namespace Sales.Services
                 };
             }
         }
+        public async Task<Response> GetList<T>(string urlBase, string prefix, string controller, string tokenType, string accessToken)
+        {
+            try
+            {
+                var client = new HttpClient();
+                //cliente.BaseAddress = new Uri(urlBase);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
 
+                var url = $"{prefix}{controller}"; // Esto concatena. Es equivalente al String.format
+                var response = await client.GetAsync(url2);
+                var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer, // Que muestre lo que leyó en la variable answer
+                    };
+                }
+
+                var list = JsonConvert.DeserializeObject<List<T>>(answer); // T sería la clase genérica. Aqui convertimos el string json, en una lista de objetos T
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = list,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
         public async Task<Response> Post<T>(string urlBase, string prefix, string controller, T model)
         {
             try
@@ -117,9 +152,10 @@ namespace Sales.Services
                 var request = JsonConvert.SerializeObject(model);
                 var content = new StringContent(request, Encoding.UTF8, "application/json");
                 var client = new HttpClient();
-                client.BaseAddress = new Uri(urlBase);
+                //client.BaseAddress = new Uri(urlBase);
                 var url = $"{prefix}{controller}";
-                var response = await client.PostAsync(url, content);
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.PostAsync(url2, content);
                 var answer = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
@@ -146,7 +182,44 @@ namespace Sales.Services
                 };
             }
         }
+        public async Task<Response> Post<T>(string urlBase, string prefix, string controller, T model, string tokenType, string accessToken)
+        {
+            try
+            {
+                var request = JsonConvert.SerializeObject(model);
+                var content = new StringContent(request, Encoding.UTF8, "application/json");
+                var client = new HttpClient();
+                //client.BaseAddress = new Uri(urlBase);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
+                var url = $"{prefix}{controller}";
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.PostAsync(url2, content);
+                var answer = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer,
+                    };
+                }
 
+                var obj = JsonConvert.DeserializeObject<T>(answer);
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = obj,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
         public async Task<Response> Put<T>(string urlBase, string prefix, string controller, T model, int id)
         {
             try
@@ -154,9 +227,10 @@ namespace Sales.Services
                 var request = JsonConvert.SerializeObject(model);
                 var content = new StringContent(request, Encoding.UTF8, "application/json");
                 var client = new HttpClient();
-                client.BaseAddress = new Uri(urlBase);
+                //client.BaseAddress = new Uri(urlBase);
                 var url = $"{prefix}{controller}/{id}";
-                var response = await client.PutAsync(url, content);
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.PutAsync(url2, content);
                 var answer = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
@@ -183,15 +257,87 @@ namespace Sales.Services
                 };
             }
         }
-        
+        public async Task<Response> Put<T>(string urlBase, string prefix, string controller, T model, int id, string tokenType, string accessToken)
+        {
+            try
+            {
+                var request = JsonConvert.SerializeObject(model);
+                var content = new StringContent(request, Encoding.UTF8, "application/json");
+                var client = new HttpClient();
+                //client.BaseAddress = new Uri(urlBase);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
+                var url = $"{prefix}{controller}/{id}";
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.PutAsync(url2, content);
+                var answer = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer,
+                    };
+                }
+
+                var obj = JsonConvert.DeserializeObject<T>(answer);
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = obj,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
         public async Task<Response> Delete(string urlBase, string prefix, string controller, int id)
         {
             try
             {
-                var cliente = new HttpClient();
-                cliente.BaseAddress = new Uri(urlBase);
+                var client = new HttpClient();
+                //client.BaseAddress = new Uri(urlBase);
                 var url = $"{prefix}{controller}/{id}"; // Esto concatena. Es equivalente al String.format
-                var response = await cliente.DeleteAsync(url);
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.DeleteAsync(url2);
+                var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer, // Que muestre lo que leyó en la variable answer
+                    };
+                }
+
+                return new Response
+                {
+                    IsSuccess = true,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+        public async Task<Response> Delete(string urlBase, string prefix, string controller, int id, string tokenType, string accessToken)
+        {
+            try
+            {
+                var client = new HttpClient();
+                //cliente.BaseAddress = new Uri(urlBase);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
+                var url = $"{prefix}{controller}/{id}"; // Esto concatena. Es equivalente al String.format
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var response = await client.DeleteAsync(url2);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
                 if (!response.IsSuccessStatusCode)
                 {
