@@ -77,10 +77,12 @@ namespace Sales.Services
             try
             {
                 var cliente = new HttpClient();
-                cliente.BaseAddress = new Uri(urlBase);
-                //var url = string.Format("{0}{1}", prefix,controller);
+                //cliente.BaseAddress = new Uri(urlBase);
+                
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+
                 var url = $"{prefix}{controller}"; // Esto concatena. Es equivalente al String.format
-                var response = await cliente.GetAsync(url);
+                var response = await cliente.GetAsync(url2);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
                 if (!response.IsSuccessStatusCode)
                 {

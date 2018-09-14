@@ -4,6 +4,7 @@ namespace Sales.ViewModels
     using System.Windows.Input;
     using GalaSoft.MvvmLight.Command;
     using Helpers;
+    using Views;
     using Services;
     using Xamarin.Forms;
 
@@ -103,9 +104,10 @@ namespace Sales.ViewModels
                 return;
             }
 
+            MainViewModel.GetInstance().Products = new ProductsViewModel();
+            Application.Current.MainPage = new ProductsPage();
             this.IsRunning = false;
             this.IsEnabled = true;
-            await Application.Current.MainPage.DisplayAlert("ok", "Yeah...!!",Languages.Accept);
 
         }
         #endregion
