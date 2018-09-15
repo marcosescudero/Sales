@@ -10,14 +10,17 @@ namespace Sales
 
     public partial class App : Application
     {
+        public static NavigationPage Navigator { get; internal set; }
+
         public App()
         {
             InitializeComponent();
 
-            if (Settings.IsRemembered && string.IsNullOrEmpty(Settings.AccessToken))
+            if (Settings.IsRemembered && !string.IsNullOrEmpty(Settings.AccessToken))
             {
                 MainViewModel.GetInstance().Products = new ProductsViewModel();
-                MainPage = new NavigationPage(new ProductsPage());
+                MainPage = new MasterPage();
+
             }
             else
             {

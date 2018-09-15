@@ -35,7 +35,7 @@ namespace Sales.ViewModels
         private async void EditProduct()
         {
             MainViewModel.GetInstance().EditProduct = new EditProductViewModel(this);
-            await Application.Current.MainPage.Navigation.PushAsync(new EditProductPage());
+            await App.Navigator.PushAsync(new EditProductPage());
         }
 
         public ICommand DeleteProductCommand
@@ -70,7 +70,7 @@ namespace Sales.ViewModels
             var prefix = Application.Current.Resources["UrlPrefix"].ToString(); // Obtengo el prefijo del diccionario de recursos.
             var controller = Application.Current.Resources["UrlProductsController"].ToString(); // Obtengo el controlador del diccionario de recursos.
 
-            var response = await this.apiService.Delete(url, prefix, controller,this.ProductId);
+            var response = await this.apiService.Delete(url, prefix, controller,this.ProductId, Settings.TokenType, Settings.AccessToken);
 
             if (!response.IsSuccess)
             {

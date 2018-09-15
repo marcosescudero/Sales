@@ -96,7 +96,7 @@ namespace Sales.ViewModels
             var prefix = Application.Current.Resources["UrlPrefix"].ToString(); // Obtengo el prefijo del diccionario de recursos.
             var controller = Application.Current.Resources["UrlProductsController"].ToString(); // Obtengo el controlador del diccionario de recursos.
 
-            var response = await this.apiService.Delete(url, prefix, controller, this.Product.ProductId);
+            var response = await this.apiService.Delete(url, prefix, controller, this.Product.ProductId, Settings.TokenType, Settings.AccessToken);
 
             if (!response.IsSuccess)
             {
@@ -115,7 +115,7 @@ namespace Sales.ViewModels
             productsViewModel.RefreshList();
             this.IsRunning = false;
             this.isEnabled = true;
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await App.Navigator.PopAsync();
         }
 
         public ICommand ChangeImageCommand
@@ -224,7 +224,7 @@ namespace Sales.ViewModels
             var url = Application.Current.Resources["UrlAPI"].ToString();
             var prefix = Application.Current.Resources["UrlPrefix"].ToString();
             var controller = Application.Current.Resources["UrlProductsController"].ToString();
-            var response = await this.apiService.Put(url, prefix, controller, this.product,this.Product.ProductId);
+            var response = await this.apiService.Put(url, prefix, controller, this.product,this.Product.ProductId, Settings.TokenType, Settings.AccessToken);
 
             if (!response.IsSuccess)
             {
@@ -256,7 +256,7 @@ namespace Sales.ViewModels
 
             this.IsRunning = false;
             this.IsEnabled = true;
-            await Application.Current.MainPage.Navigation.PopAsync();
+            await App.Navigator.PopAsync();
         }
         #endregion
 
