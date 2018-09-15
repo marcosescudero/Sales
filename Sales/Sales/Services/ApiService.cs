@@ -44,7 +44,6 @@ namespace Sales.Services
                 return null;
             }
         }
-
         public async Task<Response> CheckConnection()
         {
             if (!CrossConnectivity.Current.IsConnected)
@@ -71,7 +70,6 @@ namespace Sales.Services
                 IsSuccess = true,
             };
         }
-
         // La clase Response, como es una clase que usaremos transversalmente, no la crearemos aquí, sino que la crearemos en Sales.Common.Models
         public async Task<Response> GetList<T>(string urlBase, string prefix, string controller)
         {
@@ -229,7 +227,7 @@ namespace Sales.Services
                 var client = new HttpClient();
                 //client.BaseAddress = new Uri(urlBase);
                 var url = $"{prefix}{controller}/{id}";
-                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var url2 = new Uri(string.Format("{0}{1}{2}/{3}", urlBase, prefix, controller,id)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
                 var response = await client.PutAsync(url2, content);
                 var answer = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
@@ -267,7 +265,7 @@ namespace Sales.Services
                 //client.BaseAddress = new Uri(urlBase);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
                 var url = $"{prefix}{controller}/{id}";
-                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var url2 = new Uri(string.Format("{0}{1}{2}/{3}", urlBase, prefix, controller,id)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
                 var response = await client.PutAsync(url2, content);
                 var answer = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
@@ -302,7 +300,7 @@ namespace Sales.Services
                 var client = new HttpClient();
                 //client.BaseAddress = new Uri(urlBase);
                 var url = $"{prefix}{controller}/{id}"; // Esto concatena. Es equivalente al String.format
-                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var url2 = new Uri(string.Format("{0}{1}{2}/{3}", urlBase, prefix, controller,id)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
                 var response = await client.DeleteAsync(url2);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
                 if (!response.IsSuccessStatusCode)
@@ -336,7 +334,7 @@ namespace Sales.Services
                 //cliente.BaseAddress = new Uri(urlBase);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
                 var url = $"{prefix}{controller}/{id}"; // Esto concatena. Es equivalente al String.format
-                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var url2 = new Uri(string.Format("{0}{1}{2}/{3}", urlBase, prefix, controller,id)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
                 var response = await client.DeleteAsync(url2);
                 var answer = await response.Content.ReadAsStringAsync(); // Aqui tenemos todo el json, pero en formato string. Hay que desserializarlo.
                 if (!response.IsSuccessStatusCode)
@@ -362,7 +360,5 @@ namespace Sales.Services
                 };
             }
         }
-
-
     }
 }

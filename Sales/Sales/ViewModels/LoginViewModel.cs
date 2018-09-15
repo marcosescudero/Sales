@@ -89,7 +89,7 @@ namespace Sales.ViewModels
                 return;
             }
 
-            var url = Application.Current.Resources["UrlAPI"].ToString(); // Obtengo la url del diccionario de recursos.
+            var url = Application.Current.Resources["UrlAPI"].ToString()+"/"; // Obtengo la url del diccionario de recursos.
             var token = await this.apiService.GetToken(url, this.Email, this.Password);
 
             if (token == null || string.IsNullOrEmpty(token.AccessToken))

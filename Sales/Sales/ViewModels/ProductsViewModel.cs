@@ -1,9 +1,11 @@
 ﻿
 namespace Sales.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Common.Models;
     using GalaSoft.MvvmLight.Command;
@@ -16,6 +18,8 @@ namespace Sales.ViewModels
         #region Attributes
         private string filter;
         private ApiService apiService;
+        private DataService dataService;
+
         private bool isRefreshing;
         private ObservableCollection<ProductItemViewModel> products;
         #endregion
@@ -50,7 +54,9 @@ namespace Sales.ViewModels
         {
             instance = this;
             this.apiService = new ApiService();
+            this.dataService = new DataService();
             this.LoadProducts();
+            this.IsRefreshing = false;
         }
         #endregion
 
@@ -73,13 +79,43 @@ namespace Sales.ViewModels
             this.IsRefreshing = true;
 
             var connection = await apiService.CheckConnection();
-            if (!connection.IsSuccess)
+            if (connection.IsSuccess)
+            {
+                var answer = await this.LoadProductsFromAPI();
+                if (answer)
+                {
+                    this.SaveProductsToDB();
+                }
+            } else
+            {
+                await this.LoadProductsFromDB();
+            }
+
+            if (this.MyProducts == null || this.MyProducts.Count == 0)
             {
                 this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, Languages.NoProductsMessage, Languages.Accept);
                 return;
             }
 
+            this.RefreshList();
+            this.IsRefreshing = false;
+
+        }
+
+        private async Task LoadProductsFromDB()
+        {
+            this.MyProducts = await this.dataService.GetAllProducts();
+        }
+
+        private async Task SaveProductsToDB()
+        {
+            await this.dataService.DeleteAllProducts();
+            this.dataService.Insert(this.MyProducts);
+        }
+
+        private async Task<bool> LoadProductsFromAPI()
+        {
             //var response = await this.apiService.GetList<Product>("http://200.55.241.235", "/SalesAPI/api", "/Products");
             var url = Application.Current.Resources["UrlAPI"].ToString(); // Obtengo la url del diccionario de recursos.
             var prefix = Application.Current.Resources["UrlPrefix"].ToString(); // Obtengo el prefijo del diccionario de recursos.
@@ -89,14 +125,10 @@ namespace Sales.ViewModels
 
             if (!response.IsSuccess)
             {
-                this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
-                return;
+                return false;
             }
-
             this.MyProducts = (List<Product>)response.Result; // hay que castearlo
-            this.RefreshList();
-            this.IsRefreshing = false;
+            return true;
         }
 
         public void RefreshList()
