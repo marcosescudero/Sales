@@ -142,7 +142,6 @@ namespace Sales.Backend.Controllers
                 return RedirectToAction("Index");
             }
 
-
             return View(view);
         }
 
