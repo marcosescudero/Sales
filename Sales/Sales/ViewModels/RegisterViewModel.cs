@@ -8,6 +8,7 @@
     using System.Windows.Input;
     using Xamarin.Forms;
     using System;
+    using Sales.Common.Models;
 
     public class RegisterViewModel:BaseViewModel
     {
@@ -154,6 +155,65 @@
                     Languages.Accept);
                 return;
             }
+
+
+            this.IsRunning = true;
+            this.IsEnabled = false;
+
+            var connection = await this.apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    connection.Message,
+                    Languages.Accept);
+                return;
+            }
+
+            byte[] imageArray = null;
+            if (this.file != null)
+            {
+                imageArray = FilesHelper.ReadFully(this.file.GetStream());
+            }
+
+            var userRequest = new UserRequest
+            {
+                Address = this.Address,
+                EMail = this.EMail,
+                FirstName = this.FirstName,
+                ImageArray = imageArray,
+                LastName = this.LastName,
+                Password = this.Password,
+            };
+
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+            var prefix = Application.Current.Resources["UrlPrefix"].ToString();
+            var controller = Application.Current.Resources["UrlUsersController"].ToString();
+            var response = await this.apiService.Post(url, prefix, controller, userRequest);
+
+            if (!response.IsSuccess)
+            {
+                this.IsRunning = false;
+                this.IsEnabled = true;
+                await Application.Current.MainPage.DisplayAlert(
+                    Languages.Error,
+                    response.Message,
+                    Languages.Accept);
+                return;
+            }
+
+            this.IsRunning = false;
+            this.IsEnabled = true;
+
+            await Application.Current.MainPage.DisplayAlert(
+                Languages.Confirm,
+                Languages.RegisterConfirmation,
+                Languages.Accept);
+
+            await Application.Current.MainPage.Navigation.PopAsync();
+
 
         }
 
