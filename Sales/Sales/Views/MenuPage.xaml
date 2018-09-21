@@ -21,6 +21,7 @@
             </Label>
             <ListView
             	ItemsSource="{Binding Menu}"
+                SeparatorVisibility="None"
             	HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
