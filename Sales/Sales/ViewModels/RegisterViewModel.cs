@@ -213,8 +213,6 @@
                 Languages.Accept);
 
             await Application.Current.MainPage.Navigation.PopAsync();
-
-
         }
 
         public ICommand ChangeImageCommand

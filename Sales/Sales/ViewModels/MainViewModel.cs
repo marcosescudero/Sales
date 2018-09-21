@@ -6,6 +6,7 @@ namespace Sales.ViewModels
     using System.Windows.Input;
     using GalaSoft.MvvmLight.Command;
     using Helpers;
+    using Sales.Common.Models;
     using Views;
     using Xamarin.Forms;
 
@@ -17,7 +18,20 @@ namespace Sales.ViewModels
         public ProductsViewModel Products { get; set; }
         public AddProductViewModel AddProduct { get; set; }
         public RegisterViewModel Register { get; set; }
+        public MyUserASP UserASP { get; set; }
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
+        public string UserFullName
+        {
+            get
+            {
+                if (this.UserASP != null && this.UserASP.Claims != null && this.UserASP.Claims.Count > 1)
+                {
+                    return $"{this.UserASP.Claims[0].ClaimValue} {this.UserASP.Claims[1].ClaimValue}";
+                }
+
+                return null;
+            }
+        }
         #endregion
 
         #region Constructors

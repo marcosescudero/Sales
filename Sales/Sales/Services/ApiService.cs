@@ -113,7 +113,7 @@ namespace Sales.Services
                 var client = new HttpClient();
                 //cliente.BaseAddress = new Uri(urlBase);
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
-                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase nio en el prefix
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase no en el prefix
 
                 var url = $"{prefix}{controller}"; // Esto concatena. Es equivalente al String.format
                 var response = await client.GetAsync(url2);
@@ -360,5 +360,50 @@ namespace Sales.Services
                 };
             }
         }
+        public async Task<Response> GetUser(string urlBase, string prefix, string controller, string email, string tokenType, string accessToken)
+        {
+            try
+            {
+                var getUserRequest = new GetUserRequest
+                {
+                    Email = email,
+                };
+
+                var request = JsonConvert.SerializeObject(getUserRequest);
+                var content = new StringContent(request, Encoding.UTF8, "application/json");
+
+                var client = new HttpClient();
+                //client.BaseAddress = new Uri(urlBase);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
+                var url = $"{prefix}{controller}";
+                var url2 = new Uri(string.Format("{0}{1}{2}", urlBase, prefix, controller)); // ME - tengo que hacer esto por que no me toma 'SalesAPI' en la urlBase no en el prefix
+                var response = await client.PostAsync(url2, content);
+                var answer = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new Response
+                    {
+                        IsSuccess = false,
+                        Message = answer,
+                    };
+                }
+
+                var user = JsonConvert.DeserializeObject<MyUserASP>(answer);
+                return new Response
+                {
+                    IsSuccess = true,
+                    Result = user,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = ex.Message,
+                };
+            }
+        }
+
     }
 }
