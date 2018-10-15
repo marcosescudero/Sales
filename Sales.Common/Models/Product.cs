@@ -1,6 +1,7 @@
 ﻿
 namespace Sales.Common.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,9 @@ namespace Sales.Common.Models
     {
         [Key]
         public int ProductId { get; set; }
+
+        public int CategoryId { get; set; }
+
         [Required]
         [StringLength(50)]
         public string Description { get; set; }
@@ -28,6 +32,9 @@ namespace Sales.Common.Models
         [Display(Name = "Publish On")]
         [DataType(DataType.Date)]
         public DateTime PublishOn { get; set; }
+
+        [JsonIgnore] //Json no sabe deserealizar un Icollection, por ese debemos colocarle JsonIgnore
+        public virtual Category Category { get; set; } // Como no se mapea en la base de datos se le coloca el atributo "Virtual"
 
         [NotMapped] // Cuando tengo atributos que forman parte del modelo, PERO que no formen parte de la base de datos, se coloca [NotMapped]
         public byte[] ImageArray { get; set; }

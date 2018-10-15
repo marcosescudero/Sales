@@ -112,6 +112,10 @@
     <AndroidResource Include="Resources\xml\file_paths.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Sales.Common\Sales.Common.csproj">
+      <Project>{c5c19550-374b-4efd-a80c-faef7149e252}</Project>
+      <Name>Sales.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sales\Sales.csproj">
       <Project>{73BBC5D8-0340-4762-9593-41F837B96B75}</Project>
       <Name>Sales</Name>
