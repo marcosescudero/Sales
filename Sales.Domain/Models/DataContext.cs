@@ -7,9 +7,10 @@
         #region Constructors
         public DataContext() : base("DefaultConnection")
         {
-        } 
+        }
         #endregion
 
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
     }
 }

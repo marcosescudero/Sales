@@ -33,6 +33,10 @@ namespace Sales.Common.Models
         [DataType(DataType.Date)]
         public DateTime PublishOn { get; set; }
 
+        [Required]
+        [StringLength(128)]
+        public string UserId { get; set; }
+
         [JsonIgnore] //Json no sabe deserealizar un Icollection, por ese debemos colocarle JsonIgnore
         public virtual Category Category { get; set; } // Como no se mapea en la base de datos se le coloca el atributo "Virtual"
 
