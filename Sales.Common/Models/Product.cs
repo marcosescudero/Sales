@@ -37,6 +37,9 @@ namespace Sales.Common.Models
         [StringLength(128)]
         public string UserId { get; set; }
 
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+
         [JsonIgnore] //Json no sabe deserealizar un Icollection, por ese debemos colocarle JsonIgnore
         public virtual Category Category { get; set; } // Como no se mapea en la base de datos se le coloca el atributo "Virtual"
 
