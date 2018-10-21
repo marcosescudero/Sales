@@ -146,6 +146,8 @@ namespace Sales.ViewModels
                     ProductId = p.ProductId,
                     PublishOn = p.PublishOn,
                     Remarks = p.Remarks,
+                    CategoryId = p.CategoryId,
+                    UserId = p.UserId,
                 });
                 this.Products = new ObservableCollection<ProductItemViewModel>(
                     myListProductItemViewModel.OrderBy(p => p.Description));
@@ -162,6 +164,8 @@ namespace Sales.ViewModels
                     ProductId = p.ProductId,
                     PublishOn = p.PublishOn,
                     Remarks = p.Remarks,
+                    CategoryId = p.CategoryId,
+                    UserId = p.UserId,
                 }).Where(p => p.Description.ToLower().Contains(this.Filter.ToLower())).ToList();
 
                 this.Products = new ObservableCollection<ProductItemViewModel>(
