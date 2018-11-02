@@ -11,6 +11,8 @@ namespace Sales.ViewModels
     using Common.Models;
     using GalaSoft.MvvmLight.Command;
     using Helpers;
+    using Plugin.Geolocator;
+    using Plugin.Geolocator.Abstractions;
     using Plugin.Media;
     using Plugin.Media.Abstractions;
     using Services;
@@ -123,8 +125,7 @@ namespace Sales.ViewModels
             return true;
         }
         #endregion
-
-
+        
         #region Commands
         public ICommand ChangeImageCommand
         {
@@ -246,6 +247,8 @@ namespace Sales.ViewModels
                 imageArray = FilesHelper.ReadFully(this.file.GetStream());
             }
 
+            var location = await this.GetLocation();
+
             var product = new Product
             {
                 Description = this.Description,
@@ -254,6 +257,8 @@ namespace Sales.ViewModels
                 ImageArray = imageArray,
                 CategoryId = this.Category.CategoryId,
                 UserId = MainViewModel.GetInstance().UserASP.Id,
+                Latitude = location == null ? 0 : location.Latitude,
+                Longitude = location == null ? 0 : location.Longitude,
             };
 
 
@@ -289,6 +294,15 @@ namespace Sales.ViewModels
             this.IsEnabled = true;
             await App.Navigator.PopAsync();
         }
+
+        private async Task<Position> GetLocation()
+        {
+            var locator = CrossGeolocator.Current;
+            locator.DesiredAccuracy = 50; // 50 Metros. Si colocamos mas presicion, se demora un poco mas en renderizar
+            var location = await locator.GetPositionAsync();
+            return location;
+        }
+
         #endregion
     }
 }

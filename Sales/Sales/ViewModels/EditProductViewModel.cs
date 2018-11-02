@@ -121,8 +121,7 @@ namespace Sales.ViewModels
             return true;
         }
         #endregion
-
-
+        
         #region Commands
         public ICommand DeleteCommand
         {
